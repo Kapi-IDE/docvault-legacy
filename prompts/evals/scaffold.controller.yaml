@@ -1,0 +1,31 @@
+prompt_key: scaffold.controller
+version: 1
+
+cases:
+  - id: investor_crud
+    inputs:
+      resource_name: Investor
+      operations: ["list", "get", "create", "update"]
+      auth_policy: "InvestorRelations.ReadWrite"
+    expect:
+      must_contain:
+        - "[ApiController]"
+        - "[Authorize(Policy = \"InvestorRelations.ReadWrite\")]"
+        - "MediatR"
+        - "ProblemDetails"
+      must_not_contain:
+        - "Password="
+        - "ConnectionString"
+
+  - id: read_only_resource
+    inputs:
+      resource_name: Fund
+      operations: ["list", "get"]
+      auth_policy: "FundData.Read"
+    expect:
+      must_contain:
+        - "[HttpGet"
+      must_not_contain:
+        - "[HttpPost"
+        - "[HttpPut"
+        - "[HttpDelete"

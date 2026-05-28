@@ -1,0 +1,99 @@
+# scaffold.yaml — code scaffolding prompts
+# Keys: scaffold.controller, scaffold.efcore_entity, scaffold.usp
+extends: voice.yaml
+namespace: scaffold
+owner: platform-eng
+
+prompts:
+
+  controller:
+    key: scaffold.controller
+    description: >
+      Generate an ASP.NET Core controller following house conventions:
+      route prefix, [ApiController], FluentValidation, MediatR handler
+      dispatch, ProblemDetails responses.
+    inputs:
+      - name: resource_name
+        type: string
+        required: true
+        description: PascalCase singular (e.g. "Investor").
+      - name: operations
+        type: array
+        required: true
+        description: Subset of ["list","get","create","update","delete"].
+      - name: auth_policy
+        type: string
+        required: true
+        description: Authorization policy name (e.g. "InvestorRelations.Read").
+    snippets:
+      - csharp_style
+      - aspnet_house_rules
+    system: |
+      You generate one C# file. Output ONLY the file body inside a
+      ```csharp fence. No prose, no diff, no markdown headings.
+      Follow {{>csharp_style}} and {{>aspnet_house_rules}}.
+    user: |
+      Generate {{resource_name}}Controller with operations: {{operations}}.
+      Auth policy: {{auth_policy}}.
+      Use MediatR commands/queries named {{resource_name}}<Op>Command|Query.
+      Return ProblemDetails on validation failure.
+    eval_set: evals/scaffold.controller.yaml
+
+  efcore_entity:
+    key: scaffold.efcore_entity
+    description: >
+      Generate an EF Core entity + IEntityTypeConfiguration<T> mapping
+      following house naming (snake_case columns, schema separation).
+    inputs:
+      - name: entity_name
+        type: string
+        required: true
+      - name: schema
+        type: string
+        required: true
+        description: DB schema (e.g. "investor", "fund", "ops").
+      - name: fields
+        type: array
+        required: true
+        description: |
+          List of {name, type, nullable, max_length?} objects.
+    snippets:
+      - csharp_style
+      - efcore_house_rules
+    system: |
+      Output two ```csharp fences in this order: (1) the entity class,
+      (2) the IEntityTypeConfiguration mapping. Nothing else.
+    user: |
+      Entity: {{entity_name}} in schema {{schema}}.
+      Fields: {{fields}}.
+      Column naming: snake_case. Table name: {{entity_name | snake_case | pluralize}}.
+    eval_set: evals/scaffold.efcore_entity.yaml
+
+  usp:
+    key: scaffold.usp
+    description: >
+      Generate a T-SQL stored procedure following house style:
+      SET NOCOUNT ON, parameter validation, explicit transaction
+      boundaries, ROWS_AFFECTED return.
+    inputs:
+      - name: name
+        type: string
+        required: true
+        description: Procedure name (e.g. "usp_Investor_Upsert").
+      - name: parameters
+        type: array
+        required: true
+      - name: schema
+        type: string
+        required: true
+    snippets:
+      - sql_style
+      - tsql_house_rules
+    system: |
+      Output ONE ```sql fence containing the CREATE OR ALTER PROCEDURE
+      statement. Follow {{>tsql_house_rules}}.
+    user: |
+      Generate {{schema}}.{{name}} with parameters: {{parameters}}.
+      Include SET NOCOUNT ON, BEGIN TRY/CATCH, and a final SELECT of
+      affected row count.
+    eval_set: evals/scaffold.usp.yaml

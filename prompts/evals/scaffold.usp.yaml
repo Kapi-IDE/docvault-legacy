@@ -1,0 +1,23 @@
+prompt_key: scaffold.usp
+version: 1
+
+cases:
+  - id: investor_upsert
+    inputs:
+      schema: investor
+      name: usp_Investor_Upsert
+      parameters:
+        - { name: "@investor_id", type: "bigint", nullable: false }
+        - { name: "@legal_name", type: "nvarchar(200)", nullable: false }
+        - { name: "@lei", type: "nvarchar(20)", nullable: true }
+    expect:
+      must_contain:
+        - "CREATE OR ALTER PROCEDURE investor.usp_Investor_Upsert"
+        - "SET NOCOUNT ON"
+        - "SET XACT_ABORT ON"
+        - "BEGIN TRY"
+        - "BEGIN CATCH"
+        - "@@ROWCOUNT"
+      must_not_contain:
+        - "SELECT *"
+        - "EXEC ("

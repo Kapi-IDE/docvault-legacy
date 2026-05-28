@@ -1,0 +1,31 @@
+# CODEOWNERS — SME ownership per namespace
+# Format: <path>  @team-or-user
+#
+# Every PR touching a path below requires review from the listed owner.
+# Voice + schema changes go through prompt-platform.
+
+# Voice + schema — central
+/voice.yaml                         @prompt-platform @ciso
+/schema/                            @prompt-platform
+/snippets/mnpi_rules.md             @ciso @prompt-platform
+/snippets/secret_patterns.md        @app-sec @prompt-platform
+/snippets/keyvault_ref.md           @platform-eng @app-sec
+/snippets/tenancy_isolation.md      @ciso @app-sec
+
+# Prompt families — per namespace
+/prompts/review.yaml                @app-sec
+/prompts/scaffold.yaml              @platform-eng
+/prompts/generate.yaml              @platform-eng
+/prompts/agent.yaml                 @ai-platform @ciso
+/prompts/fetch.yaml                 @platform-eng
+
+# Eval regression sets — same owner as the prompt family
+/evals/review.*.yaml                @app-sec
+/evals/scaffold.*.yaml              @platform-eng
+/evals/generate.*.yaml              @platform-eng
+/evals/agent.*.yaml                 @ai-platform @ciso
+/evals/fetch.*.yaml                 @platform-eng
+
+# Tooling
+/tools/                             @prompt-platform
+/.github/                           @prompt-platform

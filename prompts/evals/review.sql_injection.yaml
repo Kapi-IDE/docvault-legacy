@@ -1,0 +1,38 @@
+prompt_key: review.sql_injection
+version: 1
+
+cases:
+  - id: parameterized_dapper
+    description: Dapper with anonymous-object params — safe.
+    inputs:
+      diff: |
+        +    var rows = conn.Query<Investor>(
+        +        "SELECT * FROM investor.Investors WHERE InvestorId = @id",
+        +        new { id });
+    expect:
+      must_contain: ["SQLI_CLEAN"]
+
+  - id: string_concat_command_text
+    description: ADO.NET CommandText built with string concatenation.
+    inputs:
+      diff: |
+        +    cmd.CommandText = "SELECT * FROM investor.Investors WHERE Name LIKE '" + q + "'";
+    expect:
+      must_contain: ["FINDING:", "STRING_CONCAT"]
+
+  - id: efcore_fromsqlraw_interpolated
+    description: FromSqlRaw with $"..." interpolation — risky.
+    inputs:
+      diff: |
+        +    var x = ctx.Investors.FromSqlRaw($"SELECT * FROM investor.Investors WHERE Code = '{code}'");
+    expect:
+      must_contain: ["FINDING:", "RAW_INTERPOLATION"]
+
+  - id: dynamic_exec
+    description: T-SQL dynamic EXEC without sp_executesql.
+    inputs:
+      diff: |
+        +    DECLARE @sql nvarchar(max) = 'SELECT * FROM investor.Investors WHERE Code = ''' + @code + '''';
+        +    EXEC(@sql);
+    expect:
+      must_contain: ["FINDING:", "DYNAMIC_EXEC"]

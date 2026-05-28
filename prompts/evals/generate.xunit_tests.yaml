@@ -1,0 +1,23 @@
+prompt_key: generate.xunit_tests
+version: 1
+
+cases:
+  - id: pure_calculator
+    inputs:
+      source: |
+        public sealed class Calculator
+        {
+            public int Add(int a, int b) => a + b;
+            public int Divide(int a, int b) => b == 0 ? throw new DivideByZeroException() : a / b;
+        }
+      focus: ""
+    expect:
+      must_contain:
+        - "[Fact]"
+        - "[Theory]"
+        - "[InlineData"
+        - "FluentAssertions"
+        - "DivideByZeroException"
+      must_not_contain:
+        - "Thread.Sleep"
+        - "HttpClient"   # no live network

@@ -1,0 +1,64 @@
+# generate.yaml — artifact generation prompts
+# Keys: generate.xunit_tests, generate.dacpac_diff
+extends: voice.yaml
+namespace: generate
+owner: platform-eng
+
+prompts:
+
+  xunit_tests:
+    key: generate.xunit_tests
+    description: >
+      Generate xUnit tests for a given C# class. Uses AAA layout,
+      Theory for parameterized cases, Moq for collaborator stubs.
+    inputs:
+      - name: source
+        type: string
+        required: true
+        description: The C# class under test, full body.
+      - name: focus
+        type: string
+        required: false
+        description: Optional method name to focus on; default = all public.
+    snippets:
+      - csharp_style
+      - xunit_house_rules
+    system: |
+      You output ONE ```csharp fence with a complete test file. No prose.
+      Follow {{>xunit_house_rules}}: one assertion per test where
+      reasonable, Theory + InlineData for parameterized cases, Moq for
+      interface collaborators, no Thread.Sleep, no live network.
+    user: |
+      Source class:
+      ```csharp
+      {{source}}
+      ```
+      Focus: {{focus | default: "all public methods"}}.
+      Generate tests covering: happy path, boundary, error path.
+    eval_set: evals/generate.xunit_tests.yaml
+
+  dacpac_diff:
+    key: generate.dacpac_diff
+    description: >
+      Summarize a SqlPackage DACPAC diff into a human-readable migration
+      note. Calls out destructive ops (DROP COLUMN, ALTER TYPE narrowing)
+      requiring a pre-deploy data check.
+    inputs:
+      - name: diff_xml
+        type: string
+        required: true
+        description: Raw XML from SqlPackage /Action:DeployReport.
+    snippets:
+      - sql_style
+      - migration_risk
+    system: |
+      You parse SqlPackage DeployReport XML and produce a structured
+      migration note. Flag destructive ops per {{>migration_risk}}.
+      Output is markdown with sections: Summary, Destructive Ops,
+      Non-Destructive Ops, Required Pre-Deploy Checks.
+    user: |
+      DeployReport XML:
+      ```xml
+      {{diff_xml}}
+      ```
+    eval_set: evals/generate.dacpac_diff.yaml

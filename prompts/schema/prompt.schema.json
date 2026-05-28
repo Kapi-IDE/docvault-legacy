@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal/prompts/prompt.schema.json",
+  "title": "Prompt Family File",
+  "description": "Schema for a *.yaml file under prompts/. Each file defines one or more prompts under a shared namespace.",
+  "type": "object",
+  "required": ["extends", "namespace", "owner", "prompts"],
+  "additionalProperties": false,
+  "properties": {
+    "extends": {
+      "type": "string",
+      "description": "Path to a parent voice file. Conventionally 'voice.yaml'.",
+      "enum": ["voice.yaml"]
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Lowercase snake_case namespace shared by all prompts in this file."
+    },
+    "owner": {
+      "type": "string",
+      "description": "GitHub team slug or distribution list responsible for this file."
+    },
+    "prompts": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^[a-z][a-z0-9_]*$": { "$ref": "#/$defs/prompt" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "prompt": {
+      "type": "object",
+      "required": ["key", "description", "inputs", "system", "user", "eval_set"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$",
+          "description": "Fully-qualified key: '<namespace>.<name>'. Must match the file's namespace."
+        },
+        "description": { "type": "string", "minLength": 20 },
+        "inputs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/input" }
+        },
+        "snippets": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "description": "Snippet base names (without .md). Each must exist under snippets/."
+        },
+        "tools": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tool" }
+        },
+        "system": { "type": "string", "minLength": 1 },
+        "user": { "type": "string", "minLength": 1 },
+        "eval_set": {
+          "type": "string",
+          "pattern": "^evals/[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.yaml$"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["name", "type", "required"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "type": { "enum": ["string", "number", "boolean", "array", "object"] },
+        "required": { "type": "boolean" },
+        "description": { "type": "string" }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "scope": { "type": "string" },
+        "side_effects": { "type": "string" },
+        "requires_human_approval": { "type": "boolean" }
+      }
+    }
+  }
+}

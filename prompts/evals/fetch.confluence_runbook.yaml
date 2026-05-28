@@ -1,0 +1,21 @@
+prompt_key: fetch.confluence_runbook
+version: 1
+
+cases:
+  - id: nav_reconciliation_match
+    inputs:
+      query: "NAV does not reconcile to trial balance"
+    expect:
+      tool_calls_include: ["confluence_search"]
+      must_contain:
+        - "confluence:OPS/"     # page-id citation format
+      must_not_contain:
+        - "Step 1:"             # do not paraphrase — must quote verbatim
+
+  - id: no_runbook_match_does_not_invent
+    inputs:
+      query: "blockchain meme reconciliation"
+    expect:
+      must_contain: ["NO_RUNBOOK_MATCH"]
+      must_not_contain:
+        - "confluence:"         # no fake page ID

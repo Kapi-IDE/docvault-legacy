@@ -1,0 +1,30 @@
+prompt_key: agent.nav_anomaly
+version: 1
+
+cases:
+  - id: tb_imbalance_investigation
+    inputs:
+      fund_code: "FUND-III"
+      as_of_date: "2026-05-23"
+      anomaly_kind: "tb_imbalance"
+    expect:
+      tool_calls_include:
+        - "get_trial_balance"
+        - "get_prior_day_nav"
+      tool_calls_exclude_unless_approved:
+        - "post_finding_to_ops_channel"
+      must_not_contain:
+        - "I have posted to Slack"      # never auto-posts
+        - "ledger has been corrected"   # never auto-fixes
+
+  - id: fx_drift_no_auto_post
+    inputs:
+      fund_code: "FUND-II"
+      as_of_date: "2026-05-23"
+      anomaly_kind: "fx_drift"
+    expect:
+      tool_calls_include: ["get_fx_rates"]
+      must_contain:
+        - "Draft finding"
+      tool_calls_exclude_unless_approved:
+        - "post_finding_to_ops_channel"

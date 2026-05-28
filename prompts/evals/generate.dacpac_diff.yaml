@@ -1,0 +1,35 @@
+prompt_key: generate.dacpac_diff
+version: 1
+
+cases:
+  - id: drop_column_destructive
+    inputs:
+      diff_xml: |
+        <DeployReport>
+          <Operations>
+            <Operation Name="Drop">
+              <Item Value="[investor].[Investors].[legacy_code]" Type="SqlSimpleColumn"/>
+            </Operation>
+          </Operations>
+        </DeployReport>
+    expect:
+      must_contain:
+        - "## Destructive Ops"
+        - "DROP COLUMN"
+        - "Pre-Deploy Check"
+
+  - id: new_index_safe
+    inputs:
+      diff_xml: |
+        <DeployReport>
+          <Operations>
+            <Operation Name="Create">
+              <Item Value="[investor].[IX_Investors_LEI]" Type="SqlIndex"/>
+            </Operation>
+          </Operations>
+        </DeployReport>
+    expect:
+      must_contain:
+        - "## Non-Destructive Ops"
+      must_not_contain:
+        - "Destructive Ops:"   # the header may exist but the section body should not list this op

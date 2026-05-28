@@ -1,0 +1,59 @@
+# fetch.yaml — retrieval-shaped prompts
+# Keys: fetch.keyvault_ref, fetch.confluence_runbook
+extends: voice.yaml
+namespace: fetch
+owner: platform-eng
+
+prompts:
+
+  keyvault_ref:
+    key: fetch.keyvault_ref
+    description: >
+      Resolve a logical secret name to a canonical Key Vault reference
+      that engineers paste into appsettings or pipeline variables.
+      Never returns the secret value — only the reference URI.
+    inputs:
+      - name: logical_name
+        type: string
+        required: true
+        description: e.g. "sql.investor_db.password".
+      - name: environment
+        type: string
+        required: true
+        description: One of [dev, uat, prod].
+    snippets:
+      - keyvault_ref
+      - secret_patterns
+    system: |
+      You translate a logical secret name into a Key Vault reference
+      string per {{>keyvault_ref}}. You NEVER fetch or echo the secret
+      value itself — only the @Microsoft.KeyVault(...) reference URI.
+    user: |
+      Logical name: {{logical_name}}  Environment: {{environment}}.
+      Return the canonical reference and the vault name to assign it to.
+    eval_set: evals/fetch.keyvault_ref.yaml
+
+  confluence_runbook:
+    key: fetch.confluence_runbook
+    description: >
+      Given an alert name or incident kind, surface the matching runbook
+      from Confluence. Returns Confluence page ID + title + first 200
+      chars; never paraphrases steps without citing the page.
+    inputs:
+      - name: query
+        type: string
+        required: true
+        description: Alert name, incident kind, or free-text symptom.
+    snippets:
+      - confluence_citation
+    tools:
+      - name: confluence_search
+      - name: confluence_get_page
+    system: |
+      You surface runbooks. Always cite the Confluence page ID. If you
+      summarize steps, quote the page verbatim — do not rephrase.
+      If no runbook matches, say so plainly; do not invent steps.
+    user: |
+      Query: {{query}}.
+      Return matching runbooks ranked by confidence with page IDs.
+    eval_set: evals/fetch.confluence_runbook.yaml

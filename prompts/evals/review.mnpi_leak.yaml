@@ -1,0 +1,46 @@
+# evals/review.mnpi_leak.yaml — regression set for review.mnpi_leak
+prompt_key: review.mnpi_leak
+version: 1
+
+cases:
+
+  - id: clean_refactor
+    description: Pure refactor with no entity data — should pass clean.
+    inputs:
+      diff: |
+        --- a/src/Web/Controllers/HealthController.cs
+        +++ b/src/Web/Controllers/HealthController.cs
+        @@
+        -        return Ok("ok");
+        +        return Ok(new { status = "ok" });
+      context: "Health endpoint refactor"
+    expect:
+      must_contain: ["MNPI_CLEAN"]
+      must_not_contain: ["FINDING:"]
+
+  - id: logs_investor_name_and_commitment
+    description: Log line stringifies an Investor entity exposing name + commitment.
+    inputs:
+      diff: |
+        +    _logger.LogInformation("Loaded {Investor}", investor);
+      context: "Added debug logging in InvestorService"
+    expect:
+      must_contain: ["FINDING:", "BLOCK"]
+      severity_at_least: BLOCK
+
+  - id: nav_before_strike
+    description: Endpoint returns intra-day NAV before strike — load-bearing leak.
+    inputs:
+      diff: |
+        +        var nav = await _navService.GetCurrentIntradayAsync(fundCode);
+        +        return Ok(new { fundCode, nav });
+    expect:
+      must_contain: ["FINDING:", "BLOCK"]
+
+  - id: deal_codename_with_counterparty
+    description: A comment pairs a deal codename with the real counterparty name.
+    inputs:
+      diff: |
+        +    // Project Aurora == Northwind Capital LP (do not echo externally)
+    expect:
+      must_contain: ["FINDING:"]

@@ -1,0 +1,87 @@
+name: prompt-lint
+
+on:
+  pull_request:
+    paths:
+      - "voice.yaml"
+      - "prompts/**"
+      - "snippets/**"
+      - "evals/**"
+      - "schema/**"
+      - "tools/**"
+      - ".github/workflows/lint.yml"
+
+jobs:
+  schema:
+    name: JSON Schema validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install validators
+        run: npm install -g ajv-cli@5 js-yaml@4
+      - name: YAML → JSON, validate each prompt family
+        run: |
+          set -euo pipefail
+          for f in prompts/*.yaml; do
+            echo "→ $f"
+            node -e "const y=require('js-yaml');const fs=require('fs');process.stdout.write(JSON.stringify(y.load(fs.readFileSync('$f','utf8'))))" > "$f.json"
+            ajv validate -s schema/prompt.schema.json -d "$f.json" --strict=false
+          done
+
+  snippet_refs:
+    name: Snippet reference integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Every {{>name}} must exist in snippets/
+        run: |
+          set -euo pipefail
+          missing=0
+          # Extract all {{>name}} references in voice + prompt + snippet files,
+          # then assert that each referenced snippet has a corresponding .md.
+          refs=$(grep -rhoE '\{\{>[a-z0-9_]+\}\}' voice.yaml prompts/ snippets/ \
+                 | sed -E 's/\{\{>([a-z0-9_]+)\}\}/\1/' | sort -u)
+          for r in $refs; do
+            if [ ! -f "snippets/$r.md" ]; then
+              echo "::error::missing snippet: snippets/$r.md (referenced as {{>$r}})"
+              missing=1
+            fi
+          done
+          # Also assert snippets listed under prompts[*].snippets exist.
+          listed=$(grep -hE '^\s*-\s[a-z0-9_]+\s*$' prompts/*.yaml \
+                  | sed -E 's/^\s*-\s+([a-z0-9_]+)\s*$/\1/' | sort -u)
+          for r in $listed; do
+            if [ ! -f "snippets/$r.md" ]; then
+              echo "::warning::snippet '$r' is listed but no file at snippets/$r.md (may be a tool name — review)"
+            fi
+          done
+          exit $missing
+
+  evals:
+    name: Eval regression set
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Render YAML → .prompt.md shims
+        run: |
+          set -euo pipefail
+          npm install --no-save js-yaml@4 mustache@4
+          node tools/render-md.ts
+      - name: Run eval harness
+        env:
+          # The runner exposes only the eval account; no prod model access.
+          PROMPT_EVAL_ENDPOINT: ${{ secrets.PROMPT_EVAL_ENDPOINT }}
+          PROMPT_EVAL_KEY:      ${{ secrets.PROMPT_EVAL_KEY }}
+        run: |
+          if [ -z "${PROMPT_EVAL_ENDPOINT:-}" ]; then
+            echo "::warning::no eval endpoint configured for this branch; skipping live evals"
+            exit 0
+          fi
+          npm install --no-save @internal/prompt-eval-harness
+          npx prompt-eval-harness --evals ./evals --fail-on regression

@@ -1,0 +1,36 @@
+prompt_key: review.conn_string_leak
+version: 1
+
+cases:
+  - id: keyvault_reference_safe
+    description: Already a Key Vault reference — clean.
+    inputs:
+      diff: |
+        +    "InvestorDb": "@Microsoft.KeyVault(SecretUri=https://kv-prod-eastus2.vault.azure.net/secrets/investor-portal--db--connection/)"
+    expect:
+      must_contain: ["SECRETS_CLEAN"]
+
+  - id: inline_sql_connection_string
+    description: Plaintext SQL connection string in appsettings.
+    inputs:
+      diff: |
+        +    "InvestorDb": "Server=tcp:prod-sql.database.windows.net,1433;Database=InvestorDb;User Id=svc;Password=P@ssw0rdRotateMe;"
+    expect:
+      must_contain: ["FINDING:", "BLOCK"]
+
+  - id: storage_account_key
+    description: 88-char base64 ending in == in a config block.
+    inputs:
+      diff: |
+        +    "StorageKey": "AAAA...88charsofbase64thatlookslikearealkey...=="
+    expect:
+      must_contain: ["FINDING:"]
+
+  - id: placeholder_redacted
+    description: Obvious placeholder — WARN at most, not BLOCK.
+    inputs:
+      diff: |
+        +    "InvestorDb": "Server=...;Password=REPLACE_ME_BEFORE_DEPLOY;"
+    expect:
+      must_contain: ["FINDING:", "WARN"]
+      must_not_contain: ["BLOCK"]

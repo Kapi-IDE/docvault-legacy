@@ -1,0 +1,22 @@
+prompt_key: scaffold.efcore_entity
+version: 1
+
+cases:
+  - id: investor_entity
+    inputs:
+      entity_name: Investor
+      schema: investor
+      fields:
+        - { name: investor_id, type: long, nullable: false }
+        - { name: legal_name, type: string, nullable: false, max_length: 200 }
+        - { name: lei, type: string, nullable: true, max_length: 20 }
+        - { name: commitment_amount, type: decimal, nullable: false }
+    expect:
+      must_contain:
+        - "public class Investor"
+        - "IEntityTypeConfiguration<Investor>"
+        - "ToTable(\"investors\", \"investor\")"
+        - "HasPrecision(28, 2)"
+      must_not_contain:
+        - "[Table"           # no data-annotations style
+        - "OnModelCreating"  # mapping goes in IEntityTypeConfiguration

@@ -1,0 +1,100 @@
+# review.yaml — code review prompt family
+# Keys: review.mnpi_leak, review.sql_injection, review.conn_string_leak
+extends: voice.yaml
+namespace: review
+owner: app-sec
+
+prompts:
+
+  mnpi_leak:
+    key: review.mnpi_leak
+    description: >
+      Scan a diff or file for accidental MNPI exposure — investor names
+      next to commitments, deal codenames next to real counterparties,
+      position+ticker+date triples, NAV figures before strike date.
+    inputs:
+      - name: diff
+        type: string
+        required: true
+        description: Unified diff or full file body.
+      - name: context
+        type: string
+        required: false
+        description: One-line description of the surrounding feature.
+    snippets:
+      - mnpi_rules
+      - csharp_style
+    system: |
+      You are a defensive code reviewer focused exclusively on MNPI
+      exposure. {{>mnpi_rules}}
+      You do NOT comment on style, performance, or correctness unless
+      that issue itself causes MNPI to leak (e.g. a log line that
+      stringifies an entity containing position data).
+    user: |
+      Review the following change for MNPI exposure. For each finding,
+      emit one line of the form:
+        FINDING: <severity> <file:line> <one-line description>
+      Severities: BLOCK (must not merge), WARN (reviewer judgment).
+      If clean, emit exactly: MNPI_CLEAN
+
+      Surrounding context: {{context | default: "(none provided)"}}
+
+      ```diff
+      {{diff}}
+      ```
+    eval_set: evals/review.mnpi_leak.yaml
+
+  sql_injection:
+    key: review.sql_injection
+    description: >
+      Flag string-concatenated SQL, dynamic EXEC, and unparameterized
+      ORM raw queries. Distinguishes safe ORM usage from raw SQL.
+    inputs:
+      - name: diff
+        type: string
+        required: true
+    snippets:
+      - csharp_style
+      - sql_style
+    system: |
+      You are a security reviewer. Flag SQL injection risks only.
+      Recognize Dapper, EF Core FromSqlInterpolated (safe), FromSqlRaw
+      (risky if interpolated), and ADO.NET CommandText concatenation.
+    user: |
+      Review for SQL injection. Emit one line per finding:
+        FINDING: <severity> <file:line> <pattern> <one-line description>
+      Patterns: STRING_CONCAT, DYNAMIC_EXEC, RAW_INTERPOLATION, ORM_RAW.
+      If clean, emit exactly: SQLI_CLEAN.
+
+      ```diff
+      {{diff}}
+      ```
+    eval_set: evals/review.sql_injection.yaml
+
+  conn_string_leak:
+    key: review.conn_string_leak
+    description: >
+      Detect connection strings, SAS tokens, account keys, JWT signing
+      keys, and OAuth client secrets committed in code, config, or docs.
+    inputs:
+      - name: diff
+        type: string
+        required: true
+    snippets:
+      - secret_patterns
+      - keyvault_ref
+    system: |
+      You scan diffs for hardcoded secrets. Never echo the secret value
+      back — describe its shape only (e.g. "32-char hex, looks like an
+      Azure Storage account key"). Suggest {{>keyvault_ref}} replacement.
+    user: |
+      Scan for secret leaks. Per finding:
+        FINDING: <severity> <file:line> <secret_kind> <suggested_replacement>
+      Severities: BLOCK for any live-looking credential, WARN for
+      placeholders that match the shape (e.g. "REPLACE_ME_***").
+      If clean: SECRETS_CLEAN.
+
+      ```diff
+      {{diff}}
+      ```
+    eval_set: evals/review.conn_string_leak.yaml

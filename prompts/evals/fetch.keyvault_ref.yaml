@@ -1,0 +1,24 @@
+prompt_key: fetch.keyvault_ref
+version: 1
+
+cases:
+  - id: investor_db_password_prod
+    inputs:
+      logical_name: "sql.investor_db.password"
+      environment: "prod"
+    expect:
+      must_contain:
+        - "@Microsoft.KeyVault(SecretUri=https://kv-prod-eastus2.vault.azure.net/secrets/"
+        - "investor"
+      must_not_contain:
+        - "Password="
+        - "actual"             # never echoes a value
+        - "kv-dev-"            # wrong env vault
+
+  - id: dev_overlay
+    inputs:
+      logical_name: "nav_recon.sb.connection"
+      environment: "dev"
+    expect:
+      must_contain:
+        - "kv-dev-eastus2"
