@@ -1,0 +1,95 @@
+- code: ABC-123
+  name: "Alpha Builders Cayman Master Fund Ltd"
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 3
+  custodian: BNY Mellon
+  description: "Multi-strategy master fund with equities and fixed income"
+
+- code: PINEGROVE-001
+  name: "Pinegrove Eurozone QIAIF"
+  jurisdiction: Ireland
+  aifmd_applicable: true
+  share_classes: 4
+  custodian: State Street
+  description: "Qualified Investor Alternative Investment Fund focused on European equities"
+
+- code: EASTVALE-FND
+  name: "Eastvale Founders Class A"
+  jurisdiction: Malta
+  aifmd_applicable: true
+  share_classes: 2
+  custodian: Citco
+  description: "Early-stage venture capital fund; founders get special terms"
+
+- code: BLUERIDGE-MASTER
+  name: "Blueridge Multi-Strat Master"
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 5
+  custodian: BNY Mellon
+  description: "Large multi-strategy platform with equity, credit, macro allocations"
+
+- code: SUMMIT-HEDGEFUND
+  name: "Summit Hedge Fund L.P."
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 3
+  custodian: State Street
+  description: "Long/short equity hedge fund with Asia-Pacific focus"
+
+- code: VANGUARD-CREDIT
+  name: "Vanguard Credit Opportunities Fund"
+  jurisdiction: Ireland
+  aifmd_applicable: true
+  share_classes: 2
+  custodian: Citco
+  description: "Credit-focused fund with high-yield and distressed securities"
+
+- code: ATLANTIC-GROWTH
+  name: "Atlantic Growth Partners"
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 4
+  custodian: SS&C
+  description: "Growth equity fund targeting tech and consumer companies"
+
+- code: STERLING-FIXED
+  name: "Sterling Fixed Income Fund"
+  jurisdiction: UK
+  aifmd_applicable: true
+  share_classes: 3
+  custodian: BNY Mellon
+  description: "UK-domiciled fund focusing on government and corporate bonds"
+
+- code: TITAN-MACRO
+  name: "Titan Global Macro Fund"
+  jurisdiction: Malta
+  aifmd_applicable: true
+  share_classes: 6
+  custodian: State Street
+  description: "Global macro fund with FX, rates, commodities exposure"
+
+- code: NEON-EMERGING
+  name: "Neon Emerging Markets Fund"
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 2
+  custodian: Citco
+  description: "Emerging markets equity fund with focus on Asian and Latin American equities"
+
+- code: QUANTUM-ARBS
+  name: "Quantum Arbitrage Strategies"
+  jurisdiction: Ireland
+  aifmd_applicable: true
+  share_classes: 5
+  custodian: SS&C
+  description: "Merger arb and relative value fund; highly liquid"
+
+- code: ZENITH-PRIVATE
+  name: "Zenith Private Equity Associates"
+  jurisdiction: Cayman Islands
+  aifmd_applicable: false
+  share_classes: 1
+  custodian: BNY Mellon
+  description: "Closed-end private equity fund; 10-year lock-up"

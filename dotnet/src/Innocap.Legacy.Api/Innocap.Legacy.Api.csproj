@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>Innocap.Legacy.Api</RootNamespace>
+    <AssemblyName>Innocap.Legacy.Api</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Newtonsoft mixed with STJ — smell #12 -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.36" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Innocap.Legacy.Domain\Innocap.Legacy.Domain.csproj" />
+    <ProjectReference Include="..\Innocap.Legacy.Infrastructure\Innocap.Legacy.Infrastructure.csproj" />
+    <ProjectReference Include="..\Innocap.Legacy.Services\Innocap.Legacy.Services.csproj" />
+  </ItemGroup>
+
+</Project>

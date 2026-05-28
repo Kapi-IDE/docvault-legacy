@@ -1,0 +1,23 @@
+- prefix: INNOCAP
+  name: "Innocap Platform"
+  description: "Core investor portal, position management, NAV calculations"
+
+- prefix: PLAT
+  name: "Platform Engineering"
+  description: "Infrastructure, deployment, cloud ops, monitoring"
+
+- prefix: RISK
+  name: "Risk & Compliance"
+  description: "AIFMD compliance, audit trails, leverage/liquidity monitoring"
+
+- prefix: PORTAL
+  name: "Investor Portal"
+  description: "Investor-facing UI, statements, account management"
+
+- prefix: AUDIT
+  name: "Audit & Regulatory"
+  description: "External audit, regulatory reporting, books & records"
+
+- prefix: HEDG
+  name: "HedgeMark Legacy"
+  description: "Backlog for HedgeMark acquisition integration (deprecated 2024)"

@@ -1,0 +1,164 @@
+- field: InvestorId
+  table: dbo.Investors
+  sensitivity: investor-identity
+  description: "Unique investor identifier; PII component under GDPR"
+
+- field: InvestorEmail
+  table: dbo.Investors
+  sensitivity: investor-identity
+  description: "Investor contact email; do not log in plaintext"
+
+- field: PasswordHash
+  table: dbo.Investors
+  sensitivity: audit
+  description: "Bcrypt hash; current work factor is 4 (weak, should be 12+)"
+
+- field: PositionSizeUsd
+  table: dbo.PositionsDaily
+  sensitivity: MNPI
+  description: "Current position size in USD; MNPI if publicly unknown"
+
+- field: InstrumentId
+  table: dbo.Positions
+  sensitivity: MNPI
+  description: "Security identifier; MNPI if position not yet disclosed"
+
+- field: FundCode
+  table: dbo.Funds
+  sensitivity: reference
+  description: "Fund identifier (e.g. ABC-123); safe to reference"
+
+- field: ShareClassId
+  table: dbo.ShareClasses
+  sensitivity: reference
+  description: "Share class identifier; safe to reference"
+
+- field: ClassCode
+  table: dbo.ShareClasses
+  sensitivity: reference
+  description: "Human-readable class code (e.g. Class A USD); safe"
+
+- field: OpeningNav
+  table: dbo.NavHistory
+  sensitivity: position-data
+  description: "NAV at period open; sensitive financial metric"
+
+- field: ClosingNav
+  table: dbo.NavHistory
+  sensitivity: position-data
+  description: "NAV at period close; sensitive financial metric"
+
+- field: Subscriptions
+  table: dbo.InvestorFlows
+  sensitivity: MNPI
+  description: "Investor subscription amount; confidential investor activity"
+
+- field: Redemptions
+  table: dbo.InvestorFlows
+  sensitivity: MNPI
+  description: "Investor redemption request; confidential investor activity"
+
+- field: RealizedPnl
+  table: dbo.PositionHistory
+  sensitivity: MNPI
+  description: "Realized profit/loss on position; confidential fund performance"
+
+- field: UnrealizedPnl
+  table: dbo.PositionHistory
+  sensitivity: MNPI
+  description: "Unrealized P&L; not yet public; material if significant"
+
+- field: ManagementFeeAccrued
+  table: dbo.FeeAccruals
+  sensitivity: position-data
+  description: "Monthly management fee accrual; sensitive accounting"
+
+- field: PerformanceFeeAccrued
+  table: dbo.FeeAccruals
+  sensitivity: position-data
+  description: "Performance fee accrual; based on HWM and returns"
+
+- field: HighWaterMark
+  table: dbo.InvestorShareClassState
+  sensitivity: MNPI
+  description: "Investor's HWM; confidential fund performance metric"
+
+- field: UnitsHeld
+  table: dbo.InvestorHoldings
+  sensitivity: MNPI
+  description: "Number of shares held by investor; confidential position"
+
+- field: AsOfDate
+  table: dbo.PositionsDaily
+  sensitivity: reference
+  description: "Valuation date; safe to reference"
+
+- field: NavStrikeId
+  table: dbo.NavStrikes
+  sensitivity: reference
+  description: "Reference to NAV strike event; safe reference"
+
+- field: StatementId
+  table: dbo.Statements
+  sensitivity: reference
+  description: "Statement reference number; safe identifier"
+
+- field: AuditLogId
+  table: dbo.AuditLogs
+  sensitivity: audit
+  description: "Audit log entry ID; audit field"
+
+- field: ActionType
+  table: dbo.AuditLogs
+  sensitivity: audit
+  description: "Type of audit action (Login, Valuation, FeeFee, etc.)"
+
+- field: Timestamp
+  table: dbo.AuditLogs
+  sensitivity: audit
+  description: "Time of audit event; audit field"
+
+- field: UserId
+  table: dbo.AuditLogs
+  sensitivity: audit
+  description: "User who performed action; audit field"
+
+- field: IpAddress
+  table: dbo.AuditLogs
+  sensitivity: audit
+  description: "IP address of action; audit field (potential PII under GDPR)"
+
+- field: TaxLotId
+  table: dbo.TaxLots
+  sensitivity: position-data
+  description: "Unique identifier for tax lot (cost basis tracking)"
+
+- field: CostBasisUsd
+  table: dbo.TaxLots
+  sensitivity: MNPI
+  description: "Original cost of position; fund accounting sensitive"
+
+- field: AcquisitionDate
+  table: dbo.TaxLots
+  sensitivity: position-data
+  description: "Date position acquired; fund accounting"
+
+- field: CustodianCode
+  table: dbo.Custodians
+  sensitivity: reference
+  description: "Custodian identifier (BNY Mellon, State Street, etc.); safe"
+
+- field: AssetClassCode
+  table: dbo.Assets
+  sensitivity: reference
+  description: "Asset class (Equity, Fixed Income, Derivatives, etc.); safe"
+
+- field: CurrencyCode
+  table: dbo.Positions
+  sensitivity: MNPI
+  description: "Currency of position; MNPI if hedging intent not public"
+
+- field: ExternalCounterpartyId
+  table: dbo.Counterparties
+  sensitivity: position-data
+  description: "OTC counterparty identifier; trade relationship sensitive"

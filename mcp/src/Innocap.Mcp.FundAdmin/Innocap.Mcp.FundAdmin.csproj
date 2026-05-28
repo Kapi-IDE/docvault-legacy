@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>13.0</LangVersion>
+    <RootNamespace>Innocap.Mcp.FundAdmin</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Innocap.Mcp.FundAdmin</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 0.5.x never shipped stable; the SDK stabilised at 1.x. Use 1.* for production. -->
+    <PackageReference Include="ModelContextProtocol" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="YamlDotNet" Version="16.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\*.yaml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

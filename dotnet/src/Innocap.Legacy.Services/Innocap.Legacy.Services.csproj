@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>Innocap.Legacy.Services</RootNamespace>
+    <AssemblyName>Innocap.Legacy.Services</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.36" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Innocap.Legacy.Domain\Innocap.Legacy.Domain.csproj" />
+    <ProjectReference Include="..\Innocap.Legacy.Infrastructure\Innocap.Legacy.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

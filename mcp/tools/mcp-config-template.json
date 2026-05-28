@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "innocap-fund-admin-dev": {
+      "_comment": "Development mode: runs dotnet run from the innocap/mcp directory. Use this while editing.",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "/path/to/innocap/mcp/src/Innocap.Mcp.FundAdmin/Innocap.Mcp.FundAdmin.csproj"
+      ],
+      "env": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "innocap-fund-admin-prod": {
+      "_comment": "Production mode: uses pre-built binary. Build with 'dotnet publish -c Release' first.",
+      "command": "/path/to/innocap/mcp/bin/Release/net9.0/Innocap.Mcp.FundAdmin",
+      "env": {
+        "DOTNET_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}

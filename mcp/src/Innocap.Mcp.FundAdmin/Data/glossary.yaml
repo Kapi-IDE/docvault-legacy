@@ -1,0 +1,219 @@
+- term: NAV
+  aliases: [net-asset-value, "net asset value"]
+  definition: |
+    Net Asset Value per share. Calculated as (Fund total assets − liabilities) ÷ shares
+    outstanding. Struck daily for investor portal queries; recalculated monthly for formal
+    statements. Always represented as decimal, never double — precision loss causes
+    compliance reconciliation failures.
+  regulatory: AIFMD Annex IV reporting field; must reconcile to regulatory returns
+  see_also: [HWM, share-class, crystallization, NAV-strike]
+
+- term: HWM
+  aliases: [high-water-mark, "high water mark"]
+  definition: |
+    High Water Mark. The highest NAV per share reached in the fund's history.
+    Used to calculate performance fees — fees only accrue if current NAV exceeds HWM.
+    Resets on drawdown in some fund structures (soft gate).
+  regulatory: AIFMD Annex IV; part of performance fee calculation disclosure
+  see_also: [NAV, performance-fee, watermark, crystallization]
+
+- term: AIFMD
+  aliases: [AIFMD, "Alternative Investment Fund Managers Directive"]
+  definition: |
+    EU Directive 2011/61/EU regulating Alternative Investment Fund Managers. Requires
+    Innocap (as AIFM) to maintain books & records, audit trails, and disclosures on
+    leverage, liquidity, valuation. Covers UCITS and non-UCITS AIFs.
+  regulatory: Mandatory compliance in EU; extraterritorial for EU-domiciled funds
+  see_also: [AIFM, UCITS, depositary, audit-trail]
+
+- term: UCITS
+  aliases: [UCITS, "Undertakings for Collective Investment in Transferable Securities"]
+  definition: |
+    EU Directive 2009/65/EC establishing a single regulatory framework for investment
+    funds. UCITS funds are subject to stricter leverage, liquidity, and disclosure
+    requirements than non-UCITS AIFs.
+  regulatory: Mandatory for EU-domiciled retail funds
+  see_also: [AIFMD, AIFM, leverage, liquidity]
+
+- term: share-class
+  aliases: [share-class, "share class", class, "fund class"]
+  definition: |
+    A subdivision of a fund with different fee structures, minimum investments, or
+    currency denominations. E.g., "Class A USD" (retail, 1% management fee) vs.
+    "Class I EUR" (institutional, 0.5% management fee). Each share class has its own
+    NAV and HWM tracking.
+  regulatory: AIFMD Annex IV disclosure required per share class
+  see_also: [NAV, HWM, management-fee, performance-fee]
+
+- term: AIFM
+  aliases: [AIFM, "Alternative Investment Fund Manager"]
+  definition: |
+    Innocap in this context. The entity responsible for managing an AIF and complying
+    with AIFMD requirements: maintaining audit trails, valuation controls, liquidity
+    reporting, leverage monitoring.
+  regulatory: AIFMD-regulated entity; must have appointed depositary and risk manager
+  see_also: [AIFMD, depositary, audit-trail]
+
+- term: depositary
+  aliases: [depositary, custodian]
+  definition: |
+    Third-party entity (e.g., BNY Mellon, State Street) that holds fund assets and
+    verifies Innocap's compliance with leverage, liquidity, and valuation controls.
+    Independent safeguard for investors.
+  regulatory: AIFMD Article 21; must be EU-authorized
+  see_also: [AIFM, AIFMD, audit-trail]
+
+- term: crystallization
+  aliases: [crystallization, "lock-in", realization, "realized return"]
+  definition: |
+    The point at which a gain or loss becomes real (no longer unrealized). Often refers
+    to the moment performance fees accrue — when NAV exceeds HWM, the gain is crystallized
+    for fee calculation. Not the same as redemption.
+  regulatory: AIFMD disclosure; affects performance fee accrual
+  see_also: [NAV, HWM, performance-fee, watermark]
+
+- term: performance-fee
+  aliases: [performance-fee, "incentive fee", "carried interest"]
+  definition: |
+    Fee charged as a percentage of gains above a hurdle rate or HWM. E.g., 20% of
+    profits exceeding the HWM. Only charged when NAV > HWM (crystallization).
+  regulatory: AIFMD Annex IV disclosure required; affects investor reporting
+  see_also: [HWM, management-fee, crystallization]
+
+- term: management-fee
+  aliases: [management-fee, "annual fee", AUM-fee]
+  definition: |
+    Fixed annual fee charged as a percentage of assets under management (AUM).
+    E.g., 1.5% of AUM per year. Accrued daily or monthly, paid quarterly or annually.
+  regulatory: AIFMD Annex IV disclosure required
+  see_also: [performance-fee, AUM]
+
+- term: hurdle-rate
+  aliases: [hurdle-rate, "hurdle", "threshold", benchmark]
+  definition: |
+    The minimum return threshold that must be exceeded before performance fees accrue.
+    Often tied to a benchmark (e.g., SOFR + 3%). If fund return < hurdle, no performance
+    fee; if fund return > hurdle, fee accrues on the excess.
+  regulatory: AIFMD Annex IV; fund offering documents specify hurdle
+  see_also: [performance-fee, HWM, benchmark]
+
+- term: drawdown
+  aliases: [drawdown, "peak-to-trough", decline, loss]
+  definition: |
+    Decline in NAV from peak (HWM) to current level. E.g., "Max drawdown: 15%." Soft-gate
+    funds may reset HWM if drawdown exceeds a threshold (e.g., reset HWM after 20% drawdown).
+  regulatory: Risk disclosure in AIFMD Annex IV; tracked for leverage/liquidity monitoring
+  see_also: [HWM, watermark, leverage, liquidity]
+
+- term: MNPI
+  aliases: [MNPI, "material non-public information", inside-information]
+  definition: |
+    Material Non-Public Information. Fund position data, unrealized P&L, investor holdings,
+    unannounced transactions. SEC/CFTC regulated; inadvertent disclosure is a compliance
+    violation. DO NOT LOG, DO NOT SHARE in unencrypted channels.
+  regulatory: SEC Rule 10b5-1; CFTC Dodd-Frank; GDPR (investor identity component)
+  see_also: [audit-trail, position-data]
+
+- term: AUM
+  aliases: [AUM, "assets under management"]
+  definition: |
+    Total assets managed by the fund. Includes cash, positions, accrued fees/returns.
+    Used to calculate management fees and regulatory capital requirements.
+  regulatory: AIFMD Annex IV reporting; part of regulatory capital calculation
+  see_also: [management-fee, leverage]
+
+- term: subscription
+  aliases: [subscription, "inflow", commitment]
+  definition: |
+    An investor's commitment to invest additional capital in the fund. Processed at
+    fund subscription deadline; settled T+1 or T+2 depending on fund terms. Flows to
+    NAV calculation.
+  regulatory: Tracked in investor cap table; affects AIFMD Annex IV cap-table reporting
+  see_also: [redemption, NAV, lock-up]
+
+- term: redemption
+  aliases: [redemption, "outflow", withdrawal]
+  definition: |
+    An investor's request to withdraw capital. Subject to lock-up, gate, and side-pocket
+    rules. Settles T+1 or T+2. Reduces AUM. May be rejected if gates are triggered.
+  regulatory: AIFMD Annex IV liquidity reporting; gating rules must be disclosed upfront
+  see_also: [subscription, lock-up, gate, side-pocket]
+
+- term: lock-up
+  aliases: [lock-up, "lock-up period", restriction]
+  definition: |
+    Minimum holding period before an investor can redeem. E.g., "3-year lock-up" means
+    investor cannot redeem for 3 years from initial subscription. Enforced in Innocap's
+    redemption validation logic.
+  regulatory: Fund offering documents specify lock-up; must be enforced
+  see_also: [redemption, gate, side-pocket]
+
+- term: gate
+  aliases: [gate, "redemption gate", freeze, cap]
+  definition: |
+    A limit on the amount of capital that can be redeemed in a period. E.g., "Redemptions
+    limited to 10% of AUM per quarter." Triggered when redemption requests exceed threshold.
+    Protects fund liquidity.
+  regulatory: AIFMD Annex IV liquidity disclosure; gating rules must be pre-disclosed
+  see_also: [redemption, side-pocket, liquidity]
+
+- term: side-pocket
+  aliases: [side-pocket, "separate account", illiquid-holdings]
+  definition: |
+    A separate account holding illiquid or suspended positions. Created when positions
+    become illiquid (e.g., bankruptcy, trading halt). Side-pocketed shares have different
+    redemption terms; other investors' shares are unaffected.
+  regulatory: AIFMD Annex IV fair-valuation rules; side-pockets disclosed to investors
+  see_also: [gate, liquidity, valuation]
+
+- term: watermark
+  aliases: [watermark, HWM, high-water-mark, "previous peak"]
+  definition: |
+    Synonym for HWM. The highest point in fund NAV history. Performance fees only accrue
+    if current NAV exceeds the watermark.
+  regulatory: AIFMD Annex IV; core component of performance fee disclosure
+  see_also: [HWM, performance-fee, crystallization]
+
+- term: leverage
+  aliases: [leverage, borrowing, margin]
+  definition: |
+    Use of borrowed capital to increase exposure beyond committed capital. Innocap tracks
+    leverage ratio for AIFMD Annex IV compliance. Hard limit: 2x gross leverage per
+    fund prospectus.
+  regulatory: AIFMD Article 15; mandatory leverage disclosure; ESMA leverage calculations
+  see_also: [AIFMD, liquidity, drawdown]
+
+- term: liquidity
+  aliases: [liquidity, "cash buffer", "liquid reserves"]
+  definition: |
+    Proportion of fund assets that can be quickly converted to cash. Low liquidity increases
+    redemption gates. Innocap monitors by asset class and publishes monthly.
+  regulatory: AIFMD Annex IV liquidity monitoring; triggers gating rules
+  see_also: [gate, leverage, redemption]
+
+- term: NAV-strike
+  aliases: [NAV-strike, "strike date", valuation-date]
+  definition: |
+    The calendar date on which NAV is formally calculated and locked for regulatory reporting.
+    Usually month-end. Innocap locks NAV at 15:00 UK time; positions marked to market at
+    that instant.
+  regulatory: AIFMD Annex IV; must match regulatory return reporting date
+  see_also: [NAV, valuation]
+
+- term: valuation
+  aliases: [valuation, "fair value", MTM, "mark-to-market"]
+  definition: |
+    Process of determining current market value of positions. Innocap uses live prices for
+    exchange-traded instruments; model-based for OTC. Must comply with AIFMD fair-value
+    hierarchy.
+  regulatory: AIFMD Article 19; fair-value methodology must be documented and reviewed
+  see_also: [NAV, side-pocket, MTM]
+
+- term: audit-trail
+  aliases: [audit-trail, "books and records", transaction-log]
+  definition: |
+    Immutable record of all fund transactions, valuations, fee accruals, investor flows.
+    Required by AIFMD Annex IV. Innocap's audit-trail writes were disabled 2022-09-14 and
+    not re-enabled (COMPLIANCE GAP).
+  regulatory: AIFMD Article 21; mandatory; regulators audit this during inspections
+  see_also: [AIFMD, MNPI]
